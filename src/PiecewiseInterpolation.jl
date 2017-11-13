@@ -4,6 +4,7 @@ using Dierckx
 
 export update_interpolations!, interpolation, rate_velocity
 
+#TODO check if we still use this function
 function rate_velocity(v1, v2)
     diff_v = vecnorm(v2, 2) - vecnorm(v1, 2)
     return max(diff_v, zero(diff_v))
@@ -31,7 +32,11 @@ function update_interpolations!(interpolations, times, values, tau)
         pop!(interpolations)
     end
     while length(interpolations) < n_tau
-        append_interpolation!(interpolations, times, values, tau)
+        try
+            append_interpolation!(interpolations, times, values, tau)
+        catch
+            break
+        end
     end
     return nothing
 end
