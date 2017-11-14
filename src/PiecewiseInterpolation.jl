@@ -5,9 +5,9 @@ using Dierckx
 export update_interpolations!, interpolation
 
 function append_interpolation!(interpolations, times, values, tau)
-    n_last_tau = length(interpolations) - 1
+    n_last_tau = length(interpolations)
     # searchsorted returns a range; its `stop` is the last index before `t`
-    begin_i  = searchsorted(times, n_last_tau * tau).stop
+    begin_i  = searchsorted(times, n_last_tau * tau).start
     end_i = searchsorted(times, (n_last_tau + 1) * tau).stop
     index_diff = end_i - begin_i
     if index_diff < 1
@@ -28,8 +28,13 @@ function update_interpolations!(interpolations, times, values, tau)
     while length(interpolations) < n_tau
         try
             append_interpolation!(interpolations, times, values, tau)
-        catch
-            break
+        catch exc
+            if isa(exc, ErrorException)
+                warn(exc.msg)
+                break
+            else
+                rethrow(exc)
+            end
         end
     end
     return nothing
