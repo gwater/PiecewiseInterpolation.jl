@@ -2,13 +2,7 @@ module PiecewiseInterpolation
 
 using Dierckx
 
-export update_interpolations!, interpolation, rate_velocity
-
-#TODO check if we still use this function
-function rate_velocity(v1, v2)
-    diff_v = vecnorm(v2, 2) - vecnorm(v1, 2)
-    return max(diff_v, zero(diff_v))
-end
+export update_interpolations!, interpolation
 
 function append_interpolation!(interpolations, times, values, tau)
     n_last_tau = length(interpolations) - 1
