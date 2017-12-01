@@ -33,6 +33,9 @@ end
 get_index_interval(times, t_start, t_end) =
     searchsortedfirst(times, t_start):searchsortedlast(times, t_end)
 
+get_interpolation(times, values) =
+    Spline1D(times, values, bc="extrapolate", k=min(5, length(times)))
+
 function append!{T}(p::PieceInterpolation{T}, new_times::Vector{T},
                     new_values::Vector, new_jumps::Vector{T})
     assert(length(new_times) == length(new_values))
@@ -43,8 +46,8 @@ function append!{T}(p::PieceInterpolation{T}, new_times::Vector{T},
     time_intervals = get_time_intervals(new_jumps, old_t_end, new_times[end])
     for time_interval in time_intervals
         indices = get_index_interval(new_times, time_interval...)
-        interpolation =
-            Spline1D(view(new_times, indices), view(new_values, indices))
+        interpolation = get_interpolation(view(new_times, indices),
+                                          view(new_values, indices))
         push!(p.pieces, interpolation)
         push!(p.intervals, time_interval)
     end
@@ -58,7 +61,7 @@ function PieceInterpolation{T <: Real}(times::Vector{T}, values::Vector,
     time_interval = (times[1], jumps[1])
     indices = 1:searchsortedlast(times, jumps[1])
     interpolation =
-        Spline1D(view(times, indices), view(values, indices))
+        get_interpolation(view(times, indices), view(values, indices))
     p = PieceInterpolation([interpolation], [time_interval])
     rest_start = searchsortedfirst(times, jumps[1])
     append!(p, times[rest_start:end], values[rest_start:end],
