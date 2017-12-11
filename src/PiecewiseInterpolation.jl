@@ -53,11 +53,6 @@ function append!{T}(p::PiecewiseSpline1D{T}, new_times::Vector{T},
     return nothing
 end
 
-"""
-    PiecewiseSpline1D(times::Vector, values::Vector, jumps::Vector)
-
-Construct a spline interpolation (based on Dierckx) which takes into account first order discontinuties.
-"""
 function PiecewiseSpline1D{T <: Real}(times::Vector{T}, values::Vector,
                                       jumps::Vector{T})
     assert(length(times) == length(values))
