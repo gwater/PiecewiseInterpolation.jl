@@ -12,3 +12,5 @@ Any `PiecewiseSpline1D` object `p` can be called as a function, i.e. `p(t)`.
     append!(p::PiecewiseSpline1D, new_times, new_values, new_jumps)
 
 Extend an existing spline `p` with new data.
+
+**A practical example can be found in our [demo notebook](demo.ipynb).**
